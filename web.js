@@ -73,4 +73,4 @@ app.route('/all')
  app.route('/a1')
  .get(getA1);
 
-app.listen(preoce.env.PORT || 3000);
+app.listen(process.env.PORT || 3000);
