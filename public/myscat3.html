@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>The d3 test</title>
+  <style>
+    .chart {} .main text {
+      font: 10px sans-serif;
+    }
+    .axis line,
+    .axis path {
+      shape-rendering: crispEdges;
+      stroke: black;
+      fill: none;
+    }
+    circle {
+      fill: steelblue;
+    }
+  </style>
+  <script type="text/javascript" src="http://mbostock.github.com/d3/d3.v2.js"></script>
+  <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class='content'>
+
+   <div class='container'>
+     <a href="/"><i class="fa fa-home"></i>home</a><br>
+    API doc for   <a href="https://github.com/mbostock/d3/wiki/Requests">Request<a><br>
+    <a href="http://jsfiddle.net/eamonnmag/Q567s/">jsfiddle example of exactly what I want but it has the json payload in the script</a>
+    <a href="https://strongriley.github.io/d3/ex/splom.html">flowers example, looks like the right way</a>
+    <a href="https://www.youtube.com/watch?v=2S1AbEWX85o">You tube example load data from JSON</a>
+    <br>This example is the same as myscat2 but it loads data from data.json instead of data.csv
+    <div class="well">
+      Not sure why all the points are in the upper left, I think I am sacling them wrong as in y / y.max
+    </div>
+  </div>
+    <!-- /the chart goes here -->
+  </div>
+  <script type="text/javascript">
+    var data; //a global
+    d3.json("data/data.json", function(data) {
+
+
+    var margin = {
+        top: 20,
+        right: 15,
+        bottom: 60,
+        left: 60
+      },
+      width = 960 - margin.left - margin.right,
+      height = 500 - margin.top - margin.bottom;
+
+    var x = d3.scale.linear()
+      .domain([0, d3.max(data, function(d) {
+        //return d[0];
+        console.log('the max x is ' + d.x);
+        return d.x;
+
+      })])
+      .range([0, width]);
+
+    var y = d3.scale.linear()
+      .domain([0, d3.max(data, function(d) {
+        //return d[1];
+        console.log('the max y is ' + d.y);
+        return d.y;
+      })])
+      .range([height, 0]);
+
+    var chart = d3.select('body')
+      .append('svg:svg')
+      .attr('width', width + margin.right + margin.left)
+      .attr('height', height + margin.top + margin.bottom)
+      .attr('class', 'chart')
+
+    var main = chart.append('g')
+      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+      .attr('width', width)
+      .attr('height', height)
+      .attr('class', 'main')
+
+    // draw the x axis
+    var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient('bottom');
+
+    main.append('g')
+      .attr('transform', 'translate(0,' + height + ')')
+      .attr('class', 'main axis date')
+      .call(xAxis);
+
+    // draw the y axis
+    var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient('left');
+
+    main.append('g')
+      .attr('transform', 'translate(0,0)')
+      .attr('class', 'main axis date')
+      .call(yAxis);
+
+    var g = main.append("svg:g");
+
+    g.selectAll("scatter-dots")
+      .data(data)
+      .enter().append("svg:circle")
+      .attr("cx", function(d, i) {
+        //return x(d[0]);
+        console.log('x = ' + d.x);
+        return d.x;
+      })
+      .attr("cy", function(d) {
+        //return y(d[1]);
+        console.log('y='+d.y);
+        return d.y;
+      })
+      .attr("r", 2);
+
+
+    });
+  </script>
+</body>
+
+</html>
