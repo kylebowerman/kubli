@@ -1,0 +1,28 @@
+{
+  "name": "kubli",
+  "version": "1.0.0",
+  "description": "Yun ds3.js grapher",
+  "main": "web.js",
+  "dependencies": {
+    "express": "^4.10.7",
+    "request": "^2.51.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kbowerma/kubli"
+  },
+  "keywords": [
+    "arduino",
+    "d3js"
+  ],
+  "author": "Kyle Bowerman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kbowerma/kubli/issues"
+  },
+  "homepage": "https://github.com/kbowerma/kubli"
+}
