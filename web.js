@@ -1,11 +1,12 @@
 var express = require('express');
 var  app = express();
 var request = require('request');
-  // controller = require('./server/controller');
+var port = process.env.PORT || 3000
 
 
 
-//var apikey = "MpG21p39McRueq-3ColxkXIReiHua-Vf";
+
+
 var apikey = process.env.MONGO_APIKEY;
 var mongoQuery = encodeURIComponent('{"version":2}');
 var mongoFields = encodeURIComponent('{"pin":1,"device":1,"value":1,"time":1,"epochtime":1,"_id":0}');
@@ -73,4 +74,5 @@ app.route('/all')
  app.route('/a1')
  .get(getA1);
 
-app.listen(process.env.PORT || 3000);
+app.listen(port || 3000);
+console.log('app started on port ' + port);
