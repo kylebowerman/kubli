@@ -37,15 +37,52 @@
     stroke:GoldenRod;
   }
 
+  .key{
+    float:right;
+  }
+  .key_line{
+    font-size:17px;
+    width:100%;
+  }
+  .key_square{
+    height:10px;
+    width:10px;
+    outline:solid 1px black;
+    float:left;
+    margin: 6px 10px 0px 10px;
+  }
+  #timeseries{
+    float:left;
+    }
+
 
 
   </style>
   <script>
   function draw(data) {
     "use strict";
-    var margin = 50,
-    width = 900 - margin,
-    height = 300- margin;
+    // var margin = 50,
+    // width = 900 - margin,
+    // height = 300- margin;
+
+    var container_dimensions = {width: 900, height: 400},
+    margins = {top: 10, right: 20, bottom: 30, left: 60},
+    chart_dimensions = {
+      width: container_dimensions.width - margins.left - margins.right,
+      height: container_dimensions.height - margins.top - margins.bottom
+    };
+
+    var chart = d3.select("#timeseries")
+    .append("svg")
+    .attr("width", container_dimensions.width)
+    .attr("height", container_dimensions.height)
+    .append("g")
+    .attr("transform", "translate(" + margins.left + "," + margins.top + ")")
+    .attr("id","chart");
+
+
+
+
 
     // use loadash filter to make a subset of data that include only moisture
     var mdata = _.filter(data, {'device': 'moisture'});
@@ -63,12 +100,12 @@
 
       var value_scale = d3.scale.linear()
       .domain(value_extent)
-      .range([height, margin]);
+      .range([container_dimensions.height, 0]);
 
 
       var time_scale = d3.time.scale()
       .domain(time_extent)
-      .range([margin, width]);
+      .range([0, container_dimensions.width]);
       console.log('time extends ' + time_extent );
 
       var time_axis = d3.svg.axis()
@@ -78,6 +115,43 @@
       .scale(value_scale)
       .orient("left");
 
+      chart.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + chart_dimensions.height + ")")
+      .call(time_axis);
+
+      chart.append("g")
+      .attr("class", "y axis")
+      .call(count_axis);
+
+      d3.select(".y.axis")
+      .append("text")
+      .attr("text-anchor","middle")
+      .text("percent on time")
+      .attr("transform", "rotate (-270, 0, 0)")
+      .attr("x", container.height/2)
+      .attr("y", 50);
+
+      var key_items = d3.select("#key")
+      .selectAll("div")
+      .data(data)
+      .enter()
+      .append("div")
+      .attr("class","key_line")
+      .attr("id",function(d){return d.pin;});
+
+      key_items.append("div")
+      .attr("id", function(d){return "key_square_" + d.pin;})
+      .attr("class", "key_square");
+
+      key_items.append("div")
+      .attr("class","key_label")
+      .text(function(d){return d.device;});
+
+      d3.selectAll(".key_line")
+      .on("click", get_timeseries_data);
+
+
       var line = d3.svg.line()
       .x(function(d){
          return time_scale(d.epochtime);
@@ -86,6 +160,28 @@
         return value_scale(d.value);
         })
       .interpolate("linear");
+
+
+
+      function get_timeseries_data(){
+        // get the id of the current element
+        var id = d3.select(this).attr("pin");
+        // see if we have an associated time series
+        var ts = d3.select("#"+pin+"_path");
+        if (ts.empty()){
+          d3.json("/all", function(data){
+            filtered_data = data.filter(function(d){return d.pin === id});
+            draw_timeseries(filtered_data, id);
+          })
+        } else {
+          ts.remove();
+        }
+      }
+
+
+
+
+      //------------- set the svg parts
 
       d3.select("body")
       .append("svg")
@@ -108,6 +204,7 @@
       .attr('d', line(ldata))
       .attr('class', 'light');
 
+/*
       // generate the moisture circles
       d3.select("svg")
       .selectAll("mcircle")
@@ -154,7 +251,7 @@
         .attr("device", function(d){return d.device; })
         .attr("r", 1);
 
-
+*/
 
       d3.select("svg")
       .append("g")
@@ -201,7 +298,27 @@
     d3.json('/all', draw);
   </script>
 
+  <div id="timeseries">
+    <svg>
+      <g id="chart">
+      </g>
+    </svg>
+  </div>
 
+  <div id="key">
+    <div class="key_line">
+      <div class="key_square">
+      </div>
+      <div class="key_label">
+      </div>
+    </div>
+    <div class="key_line">
+      <div class="key_square">
+      </div>
+      <div class="key_label">
+      </div>
+    </div>
 
+  </div>
 </body>
 </html>

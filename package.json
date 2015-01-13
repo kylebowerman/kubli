@@ -5,6 +5,7 @@
   "main": "web.js",
   "dependencies": {
     "express": "^4.10.7",
+    "moment": "^2.9.0",
     "request": "^2.51.0"
   },
   "devDependencies": {},
