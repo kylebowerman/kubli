@@ -1,26 +1,25 @@
 'use strict';
 
-// The Package is past automatically as first parameter
-module.exports = function(Sensor, app, auth, database) {
+var sensors = require('../controllers/sensors');
 
-  app.get('/sensor/example/anyone', function(req, res, next) {
-    res.send('Anyone can access this');
-  });
+// Article authorization helpers
+var hasAuthorization = function(req, res, next) {
+  if (!req.user.isAdmin && req.sensor.user.id !== req.user.id) {
+    return res.status(401).send('User is not authorized');
+  }
+  next();
+};
 
-  app.get('/sensor/example/auth', auth.requiresLogin, function(req, res, next) {
-    res.send('Only authenticated users can access this');
-  });
+module.exports = function(Articles, app, auth) {
 
-  app.get('/sensor/example/admin', auth.requiresAdmin, function(req, res, next) {
-    res.send('Only users with Admin role can access this');
-  });
+  app.route('/sensors')
+  .get(sensors.all)
+  .post(auth.requiresLogin, sensors.create);
+  app.route('/sensors/:sensorId')
+  .get(auth.isMongoId, sensors.show)
+  .put(auth.isMongoId, auth.requiresLogin, hasAuthorization, sensors.update)
+  .delete(auth.isMongoId, auth.requiresLogin, hasAuthorization, sensors.destroy);
 
-  app.get('/sensor/example/render', function(req, res, next) {
-    Sensor.render('index', {
-      package: 'sensor'
-    }, function(err, html) {
-      //Rendering a view from the Package server/views
-      res.send(html);
-    });
-  });
+  // Finish with setting up the sensorId param
+  app.param('sensorId', sensors.sensor);
 };
