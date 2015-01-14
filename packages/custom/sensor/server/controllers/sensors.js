@@ -85,7 +85,7 @@ exports.show = function(req, res) {
 * List of Articles
 */
 exports.all = function(req, res) {
-  Sensor.find().sort('-created').populate('user', 'name username').exec(function(err, sensors) {
+  Sensor.find().sort('-epochtime').populate('user', 'name username').exec(function(err, sensors) {
     if (err) {
       return res.status(500).json({
         error: 'Cannot list the sensors'
