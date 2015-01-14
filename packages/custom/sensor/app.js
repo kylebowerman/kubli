@@ -34,7 +34,7 @@ Sensor.register(function(app, auth, database) {
      aboslute: false
    });
    Sensor.aggregateAsset('js', '../lib/moment/moment.js',{
-     weight: 3,
+     weight: 2,
      aboslute: false
    });
 
