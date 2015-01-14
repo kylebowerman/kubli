@@ -134,9 +134,20 @@ exports.a1 = function(req, res) {
 
 exports.mdaily = function(req, res) {
   Sensor
-  .find({version: 2, pin: 'A1'})
-  .sort('-epochtime')
-  .limit(1000)
+  .aggregate([{
+    $group: {
+      _id: {
+        device: "$device",
+        month : { $substr : ["$time", 5, 2 ] },
+        day: { $substr: ["$time", 8,2]},
+        hour: { $substr: ["$time", 11,2]}
+
+      },
+      avgValue: {
+        $avg: "$value"
+      }
+    }
+  }])
   .exec(function(err, sensors) {
     if (err) {
       return res.status(500).json({
