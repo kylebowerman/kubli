@@ -2,6 +2,7 @@
   "name": "sensor",
   "version": "0.0.1",
   "dependencies": {
-    "d3": "~3.5.3"
+    "d3": "~3.5.3",
+    "lodash": "~2.4.1"
   }
 }

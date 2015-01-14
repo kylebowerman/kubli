@@ -29,6 +29,10 @@ Sensor.register(function(app, auth, database) {
      weight: 4,
      aboslute: false
    });
+   Sensor.aggregateAsset('js', '../lib/lodash/dist/lodash.min.js',{
+     weight: 3,
+     aboslute: false
+   });
 
   /**
     //Uncomment to use. Requires meanio@0.3.7 or above
