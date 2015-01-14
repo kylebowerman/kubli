@@ -15,7 +15,7 @@ var apikey = process.env.MONGO_APIKEY;
 //var mongoQuery = encodeURIComponent('{"version":2}');
 var mongoQuery = "";
 var mongoFields = encodeURIComponent('{"pin":1,"device":1,"value":1,"time":1,"epochtime":1,"_id":0}');
-var mongobase = 'https://api.mongolab.com/api/1/databases/arduino/collections/kubli'
+var mongobase = 'https://api.mongolab.com/api/1/databases/arduino/collections/sensors'
 var mongosort = encodeURIComponent('{"epochtime":-1}');
 //var url = "https://api.mongolab.com/api/1/databases/arduino/collections/kubli?q="+mongoQuery+"&f="+mongoFields+"&apiKey="+apikey;
 
