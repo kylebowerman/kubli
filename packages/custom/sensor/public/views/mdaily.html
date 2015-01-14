@@ -82,7 +82,7 @@
     })
     .interpolate("linear");
 
-    d3.select("body")
+    d3.select("#mychart")
     .append("svg")
     .attr("class","chart")
     .attr("width", width+margin)
@@ -176,17 +176,17 @@
 </head>
 <body>
   <div class='container'>
-    <h3> Moisture readings  hourly aggregate</h3><br>
-    <a href="/"><i class="fa fa-home"></i>home</a><br>
+    <h3> Moisture readings  Daily aggregate</h3><br>
+
     <div class="well">
       Using data from mongodata  via server using mongos aggregate pipeline daily <a href="/mdaily">/mdaily</a>, just moisture is shown.
 
+      <div id='mychart'>
+        Daily moisture averages
+      </div>
+
     </div>
     <script>
-
-
-
-      //d3.json('data/yun.json', draw);
       d3.json('/mdaily', draw);
     </script>
   </body>

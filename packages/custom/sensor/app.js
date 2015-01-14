@@ -18,9 +18,9 @@ Sensor.register(function(app, auth, database) {
 
   //We are adding a link to the main menu for all authenticated users
   Sensor.menus.add({
-    title: 'sensor example page',
-    link: 'sensor example page',
-    roles: ['authenticated'],
+    title: 'sensor index page',
+    link: 'sensor index page',
+  //  roles: ['authenticated'],
     menu: 'main'
   });
 

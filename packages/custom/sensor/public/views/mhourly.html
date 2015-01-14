@@ -82,7 +82,7 @@
     })
     .interpolate("linear");
 
-    d3.select("body")
+    d3.select('#mychart')
     .append("svg")
     .attr("class","chart")
     .attr("width", width+margin)
@@ -177,10 +177,12 @@
 <body>
   <div class='container'>
     <h3> Moisture readings  hourly aggregate</h3><br>
-    <a href="/"><i class="fa fa-home"></i>home</a><br>
+
     <div class="well">
       Using data from mongodata  via server using mongos aggregate pipeline <a href="/mhourly">/mhourly</a>, just moisture is shown.
-
+      <div id='mychart'>
+        Both Moisture and Light Readings
+      </div>
     </div>
     <script>
 

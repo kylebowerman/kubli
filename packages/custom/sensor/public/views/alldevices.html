@@ -87,7 +87,7 @@
     })
     .interpolate('linear');
 
-    d3.select('body')
+    d3.select('#mychart')
     .append('svg')
     .attr('class','chart')
     .attr('width', width+margin)
@@ -191,11 +191,17 @@
 <body>
   <div class='container'>
     <h3> Moisture and light readings based on  Mike Dewars Book turnstile <a href="http://examples.oreilly.com/0636920025429/mikedewar-getting_started_with_d3-bdfc34e/visualisations/turnstile_traffic.html">example</a></h3><br>
-    <a href="/"><i class="fa fa-home"></i>home</a><br>
+
     <div class="well">
       Using data from mongo RESTApi via server /allanalog, both moisture and light are shown.   Used loadash to .filter data to create two data series.
 
-      <br><a href="http://bl.ocks.org/mbostock/3183403">mbostock's Scatterplot with Multiple Series example </a>  <-- not used
+      <br><a href="http://bl.ocks.org/mbostock/3183403">mbostock's Scatterplot with Multiple Series example </a>
+
+      <div id='mychart'>
+        Both Moisture and Light Readings
+      </div>
+
+
     </div>
     <script>
 

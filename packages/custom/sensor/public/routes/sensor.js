@@ -3,8 +3,8 @@
 angular.module('mean.sensor').config(['$stateProvider',
   function($stateProvider) {
     $stateProvider
-    .state('sensor example page', {
-      url: '/sensor/example',
+    .state('sensor index page', {
+      url: '/sensor/index',
       templateUrl: 'sensor/views/index.html'
     })
     .state('all devices', {
