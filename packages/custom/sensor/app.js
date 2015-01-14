@@ -33,6 +33,10 @@ Sensor.register(function(app, auth, database) {
      weight: 3,
      aboslute: false
    });
+   Sensor.aggregateAsset('js', '../lib/moment/moment.js',{
+     weight: 3,
+     aboslute: false
+   });
 
   /**
     //Uncomment to use. Requires meanio@0.3.7 or above

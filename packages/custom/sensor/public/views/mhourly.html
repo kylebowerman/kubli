@@ -116,7 +116,9 @@
     .attr("cy", function(d){return value_scale(d.value);})
     .attr("cx", function(d){return time_scale(d.epochtime);})
     .attr("device", function(d){return d.device; })
-    .attr("r", 1)
+    .attr("r", 2)
+    .attr("time", function(d){return d.time; })
+    .attr("value", function(d){return Math.round(d.value); })
     .on("mouseover", function(d){
       d3.select(this)
       .transition()
@@ -125,11 +127,31 @@
     .on("mouseout", function(d){
       d3.select(this)
       .transition()
-      .attr("r",1);
+      .attr("r",2);
     });
 
+    d3.selectAll('circle')
+      .on('mouseover.tooltip', function(d){
+        d3.select("text." + d.pin).remove();
+        d3.select('#mychart')
+        .append('text')
+        .text(moment.utc(d.epochtime).local().format('ddd M/D/YY h:mm A') + " : " +Math.round(d.value))
+        .attr('x', time_scale(d.time) +10)
+        .attr('y', value_scale(d.value) - 10)
+        .attr('class', d.pin)
+      })
+
+      .on('mouseout.tooltip', function(d){
+        d3.select("text." + d.pin)
+        .transition()
+        .duration(500)
+        .style('opacity',0)
+        .attr('transform','translate(10, -10)')
+        .remove();
+      });
 
 
+/*
     d3.selectAll("circle.light")
     .filter(function(d) {
       if ( d.device == 'light')
@@ -139,7 +161,7 @@
     .attr("cx", function(d){return time_scale(d.epochtime);})
     .attr("device", function(d){return d.device; })
     .attr("r", 1);
-
+*/
 
 
     d3.select("svg")
