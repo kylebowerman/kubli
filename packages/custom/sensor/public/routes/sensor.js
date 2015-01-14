@@ -18,6 +18,14 @@ angular.module('mean.sensor').config(['$stateProvider',
     .state('moisture', {
       url: '/sensor/moisture',
       templateUrl: 'sensor/views/moisture.html'
+    })
+    .state('moisture hourly', {
+      url: '/sensor/moisture/hourly',
+      templateUrl: 'sensor/views/mhourly.html'
+    })
+    .state('moisture daily', {
+      url: '/sensor/moisture/daily',
+      templateUrl: 'sensor/views/mdaily.html'
     });
   }
 ]);

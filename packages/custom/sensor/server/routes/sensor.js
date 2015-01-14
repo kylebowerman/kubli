@@ -23,6 +23,8 @@ module.exports = function(Articles, app, auth) {
    .get(sensors.a1);
    app.route('/a0')
    .get(sensors.a0);
+   app.route('/mhourly')
+   .get(sensors.mhourly);
    app.route('/mdaily')
    .get(sensors.mdaily);
 

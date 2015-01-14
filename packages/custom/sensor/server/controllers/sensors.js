@@ -132,28 +132,50 @@ exports.a1 = function(req, res) {
   });
 };
 
-exports.mdaily = function(req, res) {
+exports.mhourly = function(req, res) {
   Sensor
-  .aggregate([{
-    $group: {
-      _id: {
-        device: "$device",
-        month : { $substr : ["$time", 5, 2 ] },
-        day: { $substr: ["$time", 8,2]},
-        hour: { $substr: ["$time", 11,2]}
-
-      },
-      avgValue: {
-        $avg: "$value"
-      }
+  .aggregate([
+  { $match: {'device': 'moisture','version': 2}},
+  { $group: { _id: { time: {$concat: [{ $substr: ['$time', 0,14] }, '00:00.000Z' ]} },
+      value: { $avg: '$value' },
+      epochtime: {$min: '$epochtime'},
+      pin:  {$first: '$pin'},
+      device:  {$first: '$device'}
     }
-  }])
+  },
+  { $sort: {_id : -1 }}
+  ])
   .exec(function(err, sensors) {
     if (err) {
+      console.log(err);
       return res.status(500).json({
         error: 'Cannot list the sensors'
       });
     }
     res.json(sensors);
   });
+};
+
+exports.mdaily = function(req, res) {
+  Sensor
+  .aggregate([
+  { $match: {'device': 'moisture', 'version': 2}},
+{ $group: { _id: { time: {$concat: [{ $substr: ['$time', 0,11] }, '00:00:00.000Z' ]} },
+value: { $avg: '$value' },
+epochtime: {$min: '$epochtime'},
+pin:  {$first: '$pin'},
+device:  {$first: '$device'}
+}
+},
+{ $sort: {_id : -1 }}
+])
+.exec(function(err, sensors) {
+  if (err) {
+    console.log(err);
+    return res.status(500).json({
+      error: 'Cannot list the sensors'
+    });
+  }
+  res.json(sensors);
+});
 };

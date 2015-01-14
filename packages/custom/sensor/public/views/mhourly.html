@@ -45,9 +45,6 @@
     width = 900 - margin,
     height = 300- margin;
 
-    // use loadash filter to make a subset of data that include only moisture
-    var mdata = _.filter(data, {'device': 'moisture'});
-    var ldata = _.filter(data, {'device': 'light'});
 
     var value_extent = d3.extent(data,
     function(d){
@@ -97,38 +94,28 @@
     // generate the line for moisture
     d3.select('svg')
     .append('path')
-    .attr('d', line(mdata))
+    .attr('d', line(data))
     .attr('class', 'moisture');
 
-    // generate the line for light
-    d3.select('svg')
-    .append('path')
-    .attr('d', line(ldata))
-    .attr('class', 'light');
+
 
     // generate the moisture circles
     d3.select("svg")
     .selectAll("mcircle")
-    .data(mdata)
+    .data(data)
     .enter()
     .append("circle")
     .attr("class",  function(d){return d.device;});
 
     // generate the light circles
 
-    d3.select("svg")
-    .selectAll("lcircle")
-    .data(ldata)
-    .enter()
-    .append("circle")
-    .attr("class",  function(d){return d.device;});
+
 
 
     d3.selectAll("circle")
     .attr("cy", function(d){return value_scale(d.value);})
     .attr("cx", function(d){return time_scale(d.epochtime);})
     .attr("device", function(d){return d.device; })
-    .attr("time", function(d){return d.time; })
     .attr("r", 1)
     .on("mouseover", function(d){
       d3.select(this)
@@ -189,10 +176,10 @@
 </head>
 <body>
   <div class='container'>
-    <h3> Moisture readings</h3><br>
+    <h3> Moisture readings  hourly aggregate</h3><br>
     <a href="/"><i class="fa fa-home"></i>home</a><br>
     <div class="well">
-      Using data from mongo RESTApi via server <a href="/a0">/ao</a> just light are shown.
+      Using data from mongodata  via server using mongos aggregate pipeline <a href="/mhourly">/mhourly</a>, just moisture is shown.
 
     </div>
     <script>
@@ -200,7 +187,7 @@
 
 
       //d3.json('data/yun.json', draw);
-      d3.json('/a0', draw);
+      d3.json('/mhourly', draw);
     </script>
   </body>
   </html>
