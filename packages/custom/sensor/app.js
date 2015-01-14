@@ -23,8 +23,12 @@ Sensor.register(function(app, auth, database) {
     roles: ['authenticated'],
     menu: 'main'
   });
-  
+
   Sensor.aggregateAsset('css', 'sensor.css');
+  Sensor.aggregateAsset('js', '../lib/d3/d3.min.js',{
+     weight: 4,
+     aboslute: false
+   });
 
   /**
     //Uncomment to use. Requires meanio@0.3.7 or above
