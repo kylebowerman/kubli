@@ -100,3 +100,49 @@ exports.all = function(req, res) {
 
   });
 };
+
+exports.a0 = function(req, res) {
+  Sensor
+  .find({version: 2, pin: 'A0'})
+  .sort('-epochtime')
+  .limit(1000)
+  .exec(function(err, sensors) {
+    if (err) {
+      return res.status(500).json({
+        error: 'Cannot list the sensors'
+      });
+    }
+    res.json(sensors);
+
+  });
+};
+
+exports.a1 = function(req, res) {
+  Sensor
+  .find({version: 2, pin: 'A1'})
+  .sort('-epochtime')
+  .limit(1000)
+  .exec(function(err, sensors) {
+    if (err) {
+      return res.status(500).json({
+        error: 'Cannot list the sensors'
+      });
+    }
+    res.json(sensors);
+  });
+};
+
+exports.mdaily = function(req, res) {
+  Sensor
+  .find({version: 2, pin: 'A1'})
+  .sort('-epochtime')
+  .limit(1000)
+  .exec(function(err, sensors) {
+    if (err) {
+      return res.status(500).json({
+        error: 'Cannot list the sensors'
+      });
+    }
+    res.json(sensors);
+  });
+};

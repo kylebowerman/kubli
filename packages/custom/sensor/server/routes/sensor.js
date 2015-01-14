@@ -19,6 +19,13 @@ module.exports = function(Articles, app, auth) {
   .get(auth.isMongoId, sensors.show)
   .put(auth.isMongoId, auth.requiresLogin, hasAuthorization, sensors.update)
   .delete(auth.isMongoId, auth.requiresLogin, hasAuthorization, sensors.destroy);
+  app.route('/a1')
+   .get(sensors.a1);
+   app.route('/a0')
+   .get(sensors.a0);
+   app.route('/mdaily')
+   .get(sensors.mdaily);
+
 
   // Finish with setting up the sensorId param
   app.param('sensorId', sensors.sensor);
