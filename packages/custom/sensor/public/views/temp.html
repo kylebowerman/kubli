@@ -6,42 +6,11 @@
   <!-- // <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script> -->
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
   <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-  <style>
-  .axis {
-    font-family: arial;
-    font-size:0.6em;
-  }
-  path {
-    fill:none;
-    stroke:black;
-    stroke-width:2px;
-  }
-  .tick {
-    fill:none;
-    stroke:black;
-  }
-  circle{
-    stroke:black;
-    stroke-width:0.5px;
-  }
-  circle.moisture{
-    fill:steelblue;
-  }
-  circle.light{
-    fill:GoldenRod;
-  }
-  path.moisture{
-    stroke:steelblue;
-  }
-  path.light{
-    stroke:GoldenRod;
-  }
 
-
-
-  </style>
   <script>
   function draw(data) {
+    /* jshint: -W017 */
+
     'use strict';
     var margin = 50,
     width = 900 - margin,
@@ -53,9 +22,15 @@
 
     var value_extent = d3.extent(data,
     function(d){
+
       return d.value;
     }
     );
+
+    //console.log('value_extent before ' + value_extent);
+    value_extent[0] = value_extent[0] -2;
+    //console.log('value_extent after ' + value_extent);
+
 
     var time_extent = d3.extent(data,
     function(d){return d.epochtime;}
@@ -69,7 +44,7 @@
     var time_scale = d3.time.scale()
     .domain(time_extent)
     .range([margin, width]);
-    console.log('time extends ' + time_extent );
+    //console.log('time extends ' + time_extent );
 
     var time_axis = d3.svg.axis()
     .scale(time_scale);
@@ -100,30 +75,30 @@
     d3.select('svg')
     .append('path')
     .attr('d', line(mdata))
-    .attr('class', 'moisture');
+    .attr('class', 'T1');
 
     // generate the line for light
     d3.select('svg')
     .append('path')
     .attr('d', line(ldata))
-    .attr('class', 'light');
+    .attr('class', 'T2');
 
-    // generate the moisture circles
+    // generate the t1 circles
     d3.select('svg')
     .selectAll('mcircle')
     .data(mdata)
     .enter()
     .append('circle')
-    .attr('class',  function(d){return d.device;});
+    .attr('class',  function(d){return d.pin;});
 
-    // generate the light circles
+    // generate the t2 circles
 
     d3.select('svg')
     .selectAll('lcircle')
     .data(ldata)
     .enter()
     .append('circle')
-    .attr('class',  function(d){return d.device;});
+    .attr('class',  function(d){return d.pin;});
 
 
     d3.selectAll('circle')
@@ -144,9 +119,9 @@
 
 
 
-    d3.selectAll('circle.light')
+    d3.selectAll('circle.t2')
     .filter(function(d) {
-      if ( d.device == 'light')
+      if ( d.device == 't2')
       return d;
     })
     .attr('cy', function(d){return value_scale(d.value);})
@@ -159,7 +134,7 @@
       d3.select("text." + d.pin).remove();
       d3.select('#mychart')
       .append('text')
-      .text(d.device + ': ' + moment.utc(d.epochtime).local().format('ddd M/D/YY h:mm A') + ' : ' +Math.round(d.value))
+      .text(d.pin + ' addr:' + d.device + ': ' + moment.utc(d.epochtime).local().format('ddd M/D/YY h:mm A') + ' : ' +Math.round(d.value))
       .attr('x', time_scale(d.time) +10)
       .attr('y', value_scale(d.value) - 10)
       .attr('class', d.pin)
@@ -184,12 +159,12 @@
     d3.select('svg')
     .append('g')
     .attr('class', 'y axis')
-    .attr('transform', 'translate(' + margin + ',0)')
+    .attr('transform', 'translate(' + margin  + ',0)')
     .call(count_axis);
 
     d3.select('.y.axis')
     .append('text')
-    .text('moisture and light levels (10 bit = 1024 @ 5 Volts )')
+    .text('T1 and T2 degrees F '  )
     .attr('transform', 'rotate (90, ' + -margin + ', 0)')
     .attr('x', 20)
     .attr('y', -6);
@@ -209,15 +184,15 @@
 </head>
 <body>
   <div class='container'>
-    <h3> Moisture and light readings based on  Mike Dewars Book turnstile <a href="http://examples.oreilly.com/0636920025429/mikedewar-getting_started_with_d3-bdfc34e/visualisations/turnstile_traffic.html">example</a></h3><br>
+    <h3> Temprature T1 and T2</h3><br>
 
     <div class="well">
-      Using data from mongo RESTApi via server /allanalog, both moisture and light are shown.   Used loadash to .filter data to create two data series.
+      Using data from mongo  via node server /temp, both t1 and light are shown.   Used loadash to .filter data to create two data series.
 
-      <br><a href="http://bl.ocks.org/mbostock/3183403">mbostock's Scatterplot with Multiple Series example </a>
+
 
       <div id='mychart'>
-        Both Moisture and Light Readings
+        Both Temp readings in F &deg; :  T1 on Bread Board, T2 near window
       </div>
 
 

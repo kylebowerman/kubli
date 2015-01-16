@@ -1,3 +1,41 @@
-.sensor-example h1 {
-  background-color: purple
+.axis {
+  font-family: arial;
+  font-size:0.8em;
+}
+path {
+  fill:none;
+  stroke:black;
+  stroke-width:2px;
+}
+.tick {
+  fill:none;
+  stroke:black;
+}
+circle{
+  stroke:black;
+  stroke-width:0.5px;
+}
+circle.moisture{
+  fill:steelblue;
+}
+circle.light{
+  fill:GoldenRod;
+}
+path.moisture{
+  stroke:steelblue;
+}
+path.light{
+  stroke:GoldenRod;
+}
+circle.T1{
+  fill:SlateBlue;
+}
+circle.T2{
+  fill:DarkRed;
+}
+path.T1{
+  stroke:SlateBlue;
+}
+path.T2{
+  stroke:DarkRed;
 }

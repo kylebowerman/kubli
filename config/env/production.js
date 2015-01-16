@@ -28,7 +28,7 @@ module.exports = {
     */
   },
   app: {
-    name: 'MEAN - A Modern Stack - Production'
+    name: 'Bowerman - Yun'
   },
   facebook: {
     clientID: 'APP_ID',

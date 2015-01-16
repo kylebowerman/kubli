@@ -10,7 +10,7 @@ module.exports = {
     debug: false
   },
   app: {
-    name: 'MEAN - FullStack JS - Development'
+    name: 'Bowerman - Yun '
   },
   facebook: {
     clientID: 'DEFAULT_APP_ID',
