@@ -25,6 +25,7 @@ Sensor.register(function(app, auth, database) {
   });
 
   Sensor.aggregateAsset('css', 'sensor.css');
+  Sensor.aggregateAsset('css', 'weather-icons.css');
   Sensor.aggregateAsset('js', '../lib/d3/d3.min.js',{
      weight: 4,
      aboslute: false

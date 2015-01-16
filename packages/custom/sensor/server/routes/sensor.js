@@ -27,6 +27,8 @@ module.exports = function(Articles, app, auth) {
    .get(sensors.mhourly);
    app.route('/mdaily')
    .get(sensors.mdaily);
+   app.route('/temp')
+   .get(sensors.temp);
 
 
   // Finish with setting up the sensorId param

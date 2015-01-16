@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- // <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script> -->
+  <!-- // <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script> -->
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+  <style>
+  .axis {
+    font-family: arial;
+    font-size:0.6em;
+  }
+  path {
+    fill:none;
+    stroke:black;
+    stroke-width:2px;
+  }
+  .tick {
+    fill:none;
+    stroke:black;
+  }
+  circle{
+    stroke:black;
+    stroke-width:0.5px;
+  }
+  circle.moisture{
+    fill:steelblue;
+  }
+  circle.light{
+    fill:GoldenRod;
+  }
+  path.moisture{
+    stroke:steelblue;
+  }
+  path.light{
+    stroke:GoldenRod;
+  }
+
+
+
+  </style>
+  <script>
+  function draw(data) {
+    'use strict';
+    var margin = 50,
+    width = 900 - margin,
+    height = 300- margin;
+
+    // use loadash filter to make a subset of data that include only moisture
+    var mdata = _.filter(data, {'pin': 'T1'});
+    var ldata = _.filter(data, {'pin': 'T2'});
+
+    var value_extent = d3.extent(data,
+    function(d){
+      return d.value;
+    }
+    );
+
+    var time_extent = d3.extent(data,
+    function(d){return d.epochtime;}
+    );
+
+    var value_scale = d3.scale.linear()
+    .domain(value_extent)
+    .range([height, margin]);
+
+
+    var time_scale = d3.time.scale()
+    .domain(time_extent)
+    .range([margin, width]);
+    console.log('time extends ' + time_extent );
+
+    var time_axis = d3.svg.axis()
+    .scale(time_scale);
+
+    var count_axis = d3.svg.axis()
+    .scale(value_scale)
+    .orient('left');
+
+    var line = d3.svg.line()
+    .x(function(d){
+      return time_scale(d.epochtime);
+    })
+    .y(function(d){
+      return value_scale(d.value);
+    })
+    .interpolate('linear');
+
+    d3.select('#mychart')
+    .append('svg')
+    .attr('class','chart')
+    .attr('width', width+margin)
+    .attr('height', height+margin);
+
+
+
+
+    // generate the line for moisture
+    d3.select('svg')
+    .append('path')
+    .attr('d', line(mdata))
+    .attr('class', 'moisture');
+
+    // generate the line for light
+    d3.select('svg')
+    .append('path')
+    .attr('d', line(ldata))
+    .attr('class', 'light');
+
+    // generate the moisture circles
+    d3.select('svg')
+    .selectAll('mcircle')
+    .data(mdata)
+    .enter()
+    .append('circle')
+    .attr('class',  function(d){return d.device;});
+
+    // generate the light circles
+
+    d3.select('svg')
+    .selectAll('lcircle')
+    .data(ldata)
+    .enter()
+    .append('circle')
+    .attr('class',  function(d){return d.device;});
+
+
+    d3.selectAll('circle')
+    .attr('cy', function(d){return value_scale(d.value);})
+    .attr('cx', function(d){return time_scale(d.epochtime);})
+    .attr('device', function(d){return d.device; })
+    .attr('r', 1)
+    .on('mouseover', function(d){
+      d3.select(this)
+      .transition()
+      .attr('r',9);
+    })
+    .on('mouseout', function(d){
+      d3.select(this)
+      .transition()
+      .attr('r',1);
+    });
+
+
+
+    d3.selectAll('circle.light')
+    .filter(function(d) {
+      if ( d.device == 'light')
+      return d;
+    })
+    .attr('cy', function(d){return value_scale(d.value);})
+    .attr('cx', function(d){return time_scale(d.epochtime);})
+    .attr('device', function(d){return d.device; })
+    .attr('r', 1);
+
+    d3.selectAll('circle')
+    .on('mouseover.tooltip', function(d){
+      d3.select("text." + d.pin).remove();
+      d3.select('#mychart')
+      .append('text')
+      .text(d.device + ': ' + moment.utc(d.epochtime).local().format('ddd M/D/YY h:mm A') + ' : ' +Math.round(d.value))
+      .attr('x', time_scale(d.time) +10)
+      .attr('y', value_scale(d.value) - 10)
+      .attr('class', d.pin)
+    })
+
+    .on('mouseout.tooltip', function(d){
+      d3.select("text." + d.pin)
+      .transition()
+      .duration(500)
+      .style('opacity',0)
+      .attr('transform','translate(10, -10)')
+      .remove();
+    });
+
+
+    d3.select('svg')
+    .append('g')
+    .attr('class', 'x axis')
+    .attr('transform', 'translate(0,' + height + ')')
+    .call(time_axis);
+
+    d3.select('svg')
+    .append('g')
+    .attr('class', 'y axis')
+    .attr('transform', 'translate(' + margin + ',0)')
+    .call(count_axis);
+
+    d3.select('.y.axis')
+    .append('text')
+    .text('moisture and light levels (10 bit = 1024 @ 5 Volts )')
+    .attr('transform', 'rotate (90, ' + -margin + ', 0)')
+    .attr('x', 20)
+    .attr('y', -6);
+
+    d3.select('.x.axis')
+    .append('text')
+    .text('time')
+    .attr('x', function(){return (width / 1.6) - margin;})
+    .attr('y', margin/1.5);
+
+
+
+  }
+
+
+</script>
+</head>
+<body>
+  <div class='container'>
+    <h3> Moisture and light readings based on  Mike Dewars Book turnstile <a href="http://examples.oreilly.com/0636920025429/mikedewar-getting_started_with_d3-bdfc34e/visualisations/turnstile_traffic.html">example</a></h3><br>
+
+    <div class="well">
+      Using data from mongo RESTApi via server /allanalog, both moisture and light are shown.   Used loadash to .filter data to create two data series.
+
+      <br><a href="http://bl.ocks.org/mbostock/3183403">mbostock's Scatterplot with Multiple Series example </a>
+
+      <div id='mychart'>
+        Both Moisture and Light Readings
+      </div>
+
+
+    </div>
+    <script>
+
+
+
+      //d3.json('data/yun.json', draw);
+      d3.json('/temp', draw);
+    </script>
+  </body>
+  </html>

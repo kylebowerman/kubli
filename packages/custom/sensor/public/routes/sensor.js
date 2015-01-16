@@ -26,6 +26,10 @@ angular.module('mean.sensor').config(['$stateProvider',
     .state('moisture daily', {
       url: '/sensor/moisture/daily',
       templateUrl: 'sensor/views/mdaily.html'
+    })
+    .state('temp', {
+      url: '/sensor/temp',
+      templateUrl: 'sensor/views/temp.html'
     });
   }
 ]);
