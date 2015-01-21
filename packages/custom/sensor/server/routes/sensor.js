@@ -13,7 +13,7 @@ var hasAuthorization = function(req, res, next) {
 module.exports = function(Articles, app, auth) {
 
   app.route('/sensors')
-  .get(sensors.all)
+  .get(sensors.analog)
   .post(auth.requiresLogin, sensors.create);
   app.route('/sensors/:sensorId')
   .get(auth.isMongoId, sensors.show)

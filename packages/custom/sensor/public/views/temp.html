@@ -9,16 +9,18 @@
 
   <script>
   function draw(data) {
-    /* jshint: -W017 */
+    /* jshint: -W117 */
 
     'use strict';
     var margin = 50,
-    width = 900 - margin,
+    width = 700 - margin,
     height = 300- margin;
 
     // use loadash filter to make a subset of data that include only moisture
     var mdata = _.filter(data, {'pin': 'T1'});
     var ldata = _.filter(data, {'pin': 'T2'});
+    var key_data =  _.uniq(_.pluck(data, 'pin'));
+
 
     var value_extent = d3.extent(data,
     function(d){
@@ -175,7 +177,22 @@
     .attr('x', function(){return (width / 1.6) - margin;})
     .attr('y', margin/1.5);
 
+    // draw the key
+    var key_items = d3.select('#key')
+    .selectAll('div')
+    .data(key_data)
+    .enter()
+    .append('div')
+    .attr('class','key_line')
+    .attr('id',function(d){return d +'_key';});
 
+    key_items.append('div')
+    .attr('id', function(d){return 'key_square_' + d ;})
+    .attr('class', function(d){return 'key_square ' + d ;});
+
+    key_items.append('div')
+    .attr('class','key_label')
+    .text(function(d){return d;});
 
   }
 
@@ -194,6 +211,9 @@
       <div id='mychart'>
         Both Temp readings in F &deg; :  T1 on Bread Board, T2 near window
       </div>
+
+      <div id="timeseries"></div>
+      <div id="key"></div>
 
 
     </div>

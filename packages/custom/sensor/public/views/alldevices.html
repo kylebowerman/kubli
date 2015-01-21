@@ -37,6 +37,13 @@
     stroke:GoldenRod;
   }
 
+  #key_square_A0 {
+    background-color: GoldenRod;
+  }
+  #key_square_A1 {
+    background-color: steelblue;
+  }
+
 
 
   </style>
@@ -50,6 +57,12 @@
     // use loadash filter to make a subset of data that include only moisture
     var mdata = _.filter(data, {'device': 'moisture'});
     var ldata = _.filter(data, {'device': 'light'});
+    //var key_data =  _.uniq(_.pluck(data, 'pin'));
+    var key_data = _.uniq(_.map(data, function(d) {
+      return { 'pin': d.pin, 'device': d.device };
+    }),'pin');
+
+
 
     var value_extent = d3.extent(data,
     function(d){
@@ -131,6 +144,7 @@
     .attr('cx', function(d){return time_scale(d.epochtime);})
     .attr('device', function(d){return d.device; })
     .attr('r', 1)
+    .attr('id', function(d){return d._id})
     .on('mouseover', function(d){
       d3.select(this)
       .transition()
@@ -143,7 +157,7 @@
     });
 
 
-
+    /*
     d3.selectAll('circle.light')
     .filter(function(d) {
       if ( d.device == 'light')
@@ -152,7 +166,7 @@
     .attr('cy', function(d){return value_scale(d.value);})
     .attr('cx', function(d){return time_scale(d.epochtime);})
     .attr('device', function(d){return d.device; })
-    .attr('r', 1);
+    .attr('r', 1); */
 
     d3.selectAll('circle')
     .on('mouseover.tooltip', function(d){
@@ -162,7 +176,8 @@
       .text(d.device + ': ' + moment.utc(d.epochtime).local().format('ddd M/D/YY h:mm A') + ' : ' +Math.round(d.value))
       .attr('x', time_scale(d.time) +10)
       .attr('y', value_scale(d.value) - 10)
-      .attr('class', d.pin)
+      .attr('class', d.pin + ' pull-left');
+      //.attr('class', 'pull-left');
     })
 
     .on('mouseout.tooltip', function(d){
@@ -200,6 +215,24 @@
     .attr('x', function(){return (width / 1.6) - margin;})
     .attr('y', margin/1.5);
 
+    // draw the key
+
+    var key_items = d3.select('#key')
+    .selectAll('div')
+    .data(key_data)
+    .enter()
+    .append('div')
+    .attr('class','key_line')
+    .attr('id',function(d){return d.pin +'_key';});
+
+    key_items.append('div')
+    .attr('id', function(d){return 'key_square_' + d.pin ;})
+    .attr('class', function(d){return 'key_square ' + d.pin ;});
+
+    key_items.append('div')
+    .attr('class','key_label')
+    .text(function(d){return d.pin+': '+d.device;});
+
 
 
   }
@@ -219,6 +252,8 @@
       <div id='mychart'>
         Both Moisture and Light Readings
       </div>
+
+      <div id="key"></div>
 
 
     </div>

@@ -94,13 +94,37 @@ exports.all = function(req, res) {
     .limit(1000)
     .exec(function(err, sensors) {
       if (err) {
+        console.log(err);
         return res.status(500).json({
           error: 'Cannot list the sensors'
+
         });
       }
       res.json(sensors);
 
     });
+};
+
+exports.analog = function(req, res) {
+  Sensor
+  .find({
+    version: 2,
+    class: { $not: /temp/ }
+  })
+  .sort('-epochtime')
+  .populate('user', 'name username')
+  .limit(1000)
+  .exec(function(err, sensors) {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({
+        error: 'Cannot list the sensors'
+
+      });
+    }
+    res.json(sensors);
+
+  });
 };
 
 exports.a0 = function(req, res) {
