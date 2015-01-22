@@ -344,7 +344,7 @@ exports.hourly_mean = function(req, res) {
 exports.get_pins = function(req, res) {
   Sensor
   .aggregate([
-
+  { $match: {'version': 2}},
   { $group: {
       _id: {
         pin: '$pin',
@@ -359,7 +359,9 @@ exports.get_pins = function(req, res) {
       class: { $last: '$class' },
       oldest: {$first: '$time'},
       newest: {$last: '$time'},
-      version: {$last: '$version'}
+      version: {$last: '$version'},
+      epochmin: {$min: '$epochtime'},
+      epochmax: {$max: '$epochtime'}
     }
   },
   { $project: {
@@ -374,6 +376,8 @@ exports.get_pins = function(req, res) {
     'oldest': 1,
     'newest': 1,
     'version': 1,
+    'epochmin': 1,
+    'epochmax': 1,
     'line_id': { $concat: ['v',{$substr:[ '$version',0,1]},'-','$pin']},
     'line_name': {$concat: ['$pin',' ','$device']}
     }

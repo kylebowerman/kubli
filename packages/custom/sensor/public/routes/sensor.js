@@ -15,6 +15,10 @@ angular.module('mean.sensor').config(['$stateProvider',
       url: '/sensor/alldevices2',
       templateUrl: 'sensor/views/alldevices2.html'
     })
+    .state('all devices3', {
+      url: '/sensor/alldevices3',
+      templateUrl: 'sensor/views/alldevices3.html'
+    })
     .state('light', {
       url: '/sensor/light',
       templateUrl: 'sensor/views/light.html'
