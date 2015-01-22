@@ -268,3 +268,125 @@ exports.temp = function(req, res) {
     res.json(sensors);
   });
 };
+
+// hourly averages of both light and moisture
+exports.analog_mean = function(req, res) {
+  Sensor
+  .aggregate([{
+    $match: {
+      'device': {$in: ['light','moisture']},
+      'version': 2
+    }
+  }, {
+    $group: {
+      _id: {
+        time: { $concat: [{ $substr: ['$time', 0, 14] }, '00:00.000Z'] },
+        pin: '$pin',
+      },
+      value: { $avg: '$value' },
+      epochtime: { $min: '$epochtime' },
+      pin: { $first: '$pin' },
+      device: { $first: '$device' },
+      time: {$first: '$time'}
+    }
+  }, {
+    $sort: {
+      _id: -1
+    }
+  }])
+  .exec(function(err, sensors) {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({
+        error: 'Cannot list the sensors'
+      });
+    }
+    res.json(sensors);
+  });
+};
+
+// hourly averages of both light and moisture
+exports.hourly_mean = function(req, res) {
+  Sensor
+  .aggregate([{
+    $match: {
+      'version': 2
+    }
+  }, {
+    $group: {
+      _id: {
+        time: { $concat: [{ $substr: ['$time', 0, 14] }, '00:00.000Z'] },
+        pin: '$pin',
+      },
+      value: { $avg: '$value' },
+      epochtime: { $min: '$epochtime' },
+      pin: { $first: '$pin' },
+      device: { $first: '$device' },
+      time: {$first: '$time'}
+    }
+  }, {
+    $sort: {
+      _id: -1
+    }
+  }])
+  .exec(function(err, sensors) {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({
+        error: 'Cannot list the sensors'
+      });
+    }
+    res.json(sensors);
+  });
+};
+
+// gets pins, average max a min for key use.
+exports.get_pins = function(req, res) {
+  Sensor
+  .aggregate([
+
+  { $group: {
+      _id: {
+        pin: '$pin',
+        version: '$version'
+      },
+      avgValue: { $avg: '$value' },
+      maxValue: { $max: '$value' },
+      minValue: { $min: '$value' },
+      msg: { $last: '$msg' },
+      pin: { $first: '$pin' },
+      device: { $first: '$device' },
+      class: { $last: '$class' },
+      oldest: {$first: '$time'},
+      newest: {$last: '$time'},
+      version: {$last: '$version'}
+    }
+  },
+  { $project: {
+    '_id':0,
+    'msg': 1,
+    'avgValue':1,
+    'maxValue': 1,
+    'minValue': 1,
+    'pin': 1,
+    'device': 1,
+    'class': 1,
+    'oldest': 1,
+    'newest': 1,
+    'version': 1,
+    'line_id': { $concat: ['v',{$substr:[ '$version',0,1]},'-','$pin']},
+    'line_name': {$concat: ['$pin',' ','$device']}
+    }
+  },
+  { $sort: { _id: -1 },
+  }])
+  .exec(function(err, sensors) {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({
+        error: 'Cannot list the sensors'
+      });
+    }
+    res.json(sensors);
+  });
+};

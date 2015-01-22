@@ -29,6 +29,17 @@ module.exports = function(Articles, app, auth) {
    .get(sensors.mdaily);
    app.route('/temp')
    .get(sensors.temp);
+   app.route('/analog_mean')
+   .get(sensors.analog_mean);
+   app.route('/get_pins')
+   .get(sensors.get_pins);
+   app.route('/hourly_mean')
+   .get(sensors.hourly_mean);
+
+
+
+
+   
 
 
   // Finish with setting up the sensorId param
