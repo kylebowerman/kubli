@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <!-- // <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script> -->
+  <!-- // <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script> -->
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+  <style>
+    .axis {
+      font-family: arial;
+      font-size: 0.6em;
+    }
+    path {
+      fill: none;
+      stroke: black;
+      stroke-width: 1px;
+    }
+    .tick {
+      fill: none;
+      stroke: black;
+    }
+    /*circle {
+      stroke: black;
+      stroke-width: 0.5px;
+    }*/
+    circle.A1 {
+      fill: steelblue;
+    }
+    circle.A0 {
+      fill: GoldenRod;
+    }
+    path.A1 {
+      stroke: steelblue;
+    }
+    path.A0 {
+      stroke: GoldenRod;
+    }
+    #key_square_A0 {
+      background-color: GoldenRod;
+    }
+    #key_square_A1 {
+      background-color: steelblue;
+    }
+    .A0 {
+      stroke:#808183;
+      fill:#808183;
+      background-color:#808183;
+    }
+    .A1 {
+      stroke: steelblue;
+      fill: steelblue;
+      background-color: steelblue;
+    }
+    .T1 {
+      stroke: #5d3cc7;
+      fill: #5d3cc7;
+      background-color: #5d3cc7;
+    }
+    .T2 {
+      stroke: #720000;
+      fill: #720000;
+      background-color: #720000;
+    }
+  </style>
+  <script>
+  /*jshint -W003, -W109, -W117, strict: false */
+
+    var time_scale;
+    var value_scale;
+
+
+
+    function get_timeseries_data(d, i) {
+      // get the id of the current element
+      console.log('get time series called d: ' + JSON.stringify(d,undefined,2));
+      console.log('get time series called i: ' + JSON.stringify(i,undefined,2));
+      var id = d.pin;
+      // see if we have an associated time series
+      var ts = d3.select('#' + id);
+      // toggle
+      if (ts.empty()) {
+        //d3.json('/sensors', function(data) {
+         d3.json('/hourly_mean', function(data) {
+          filtered_data = data.filter(function(d) {
+            return d.pin === id;
+          });
+          draw_timeseries(filtered_data, id);
+        });
+      } else {
+        ts.remove();
+      }
+    }
+
+    function add_label(circle, d, i) {
+      d3.select(circle)
+        .transition()
+        .attr('r', 9);
+      d3.select('#' + d.pin).append('text')
+        //.text(d.pin.split('_')[1])
+        .text(d.pin)
+        .attr('text-anchor', 'middle')
+        .style("dominant-baseline", "central")
+        .attr('x', time_scale(d.epochtime))
+        .attr('y', value_scale(d.value))
+        .attr('class', 'linelabel')
+        .style('opacity', 0)
+        .style('fill', 'white')
+        .transition()
+        .style('opacity', 1);
+    }
+
+    function draw_timeseries(data, id) {
+      var line = d3.svg.line()
+        .x(function(d) {
+          return time_scale(d.epochtime);
+        })
+        .y(function(d) {
+          return value_scale(d.value);
+        })
+        .interpolate("linear");
+      var g = d3.select('#chart')
+        .append('g')
+        .attr('id', id)
+        // .attr('class', 'timeseries ' + id);
+        .attr('class', 'timeseries ' + id);
+      g.append('path')
+        .attr('d', line(data));
+      g.selectAll('circle')
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr('cx', function(d) {
+          return time_scale(d.epochtime);
+        })
+        .attr('cy', function(d) {
+          return value_scale(d.value);
+        })
+        .attr('r', 0);
+      var enter_duration = 1000;
+      g.selectAll('circle')
+        .transition()
+        .delay(function(d, i) {
+          return i / data.length * enter_duration;
+        })
+        .attr('r', 2)
+        .each('end', function(d, i) {
+          if (i === data.length - 1) {
+            add_label(this, d);
+          }
+        });
+      g.selectAll('circle')
+        .on('mouseover', function(d) {
+          d3.select(this)
+            .transition().attr('r', 9);
+        })
+        .on('mouseout', function(d, i) {
+          if (i !== data.length - 1) {
+            d3.select(this).transition().attr('r', 5);
+          }
+        });
+      g.selectAll('circle')
+        .on('mouseover.tooltip', function(d) {
+          d3.select("text." + d.pin).remove();
+          d3.select('#chart')
+            .append('text')
+            .text(d.value + "%")
+            .attr('x', time_scale(d.epochtime) + 10)
+            .attr('y', value_scale(d.value) - 10)
+            .attr('class', d.pin);
+        })
+        .on('mouseout.tooltip', function(d) {
+          d3.select("text." + d.pin)
+            .transition()
+            .duration(500)
+            .style('opacity', 0)
+            .attr('transform', 'translate(10, -10)')
+            .remove();
+        });
+    }
+
+    function draw(raw_data) {
+      "use strict";
+
+      // use loadash filter to make a subset of data that include version2
+      var data = _.filter(raw_data, {'version': 2});
+
+      var value_extent = d3.extent(data,
+        function(d) {
+          return d.value;
+        }
+      );
+
+      var time_extent = d3.extent(data,
+        function(d) {
+          return d.epochtime;
+        }
+      );
+
+
+      // set up the viewport, the scales, and axis generators
+      var container_dimensions = {
+          width: 900,
+          height: 400
+        },
+        margins = {
+          top: 10,
+          right: 20,
+          bottom: 30,
+          left: 60
+        },
+        chart_dimensions = {
+          width: container_dimensions.width - margins.left - margins.right,
+          height: container_dimensions.height - margins.top - margins.bottom
+        };
+
+
+      time_scale = d3.time.scale()
+        .range([0, chart_dimensions.width])
+        .domain([1420921119000, 1421881511523]);
+        // .domain(time_extent);
+      value_scale = d3.scale.linear()
+        .range([chart_dimensions.height, 0])
+        .domain([0, 1024]);
+        // .domain(value_extent);
+      console.log('the value extends are ' + value_extent);
+      var time_axis = d3.svg.axis()
+        .scale(time_scale);
+      var count_axis = d3.svg.axis()
+        .scale(value_scale)
+        .orient("left");
+      // draw axes
+      var g = d3.select('#timeseries')
+        .append('svg')
+        .attr("width", container_dimensions.width)
+        .attr("height", container_dimensions.height)
+        .append("g")
+        .attr("transform", "translate(" + margins.left + "," + margins.top + ")")
+        .attr("id", "chart");
+      g.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + chart_dimensions.height + ")")
+        .call(time_axis);
+      g.append("g")
+        .attr("class", "y axis")
+        .call(count_axis);
+      // draw the y-axis label
+      d3.select('.y.axis')
+        .append('text')
+        .text('percent on time')
+        .attr('transform', "rotate (-270, 0, 0)")
+        .attr('x', 100)
+        .attr('y', 50);
+      // draw the key
+      var key_items = d3.select('#key')
+        .selectAll('div')
+        .data(data)
+        .enter()
+        .append('div')
+        .attr('class', 'key_line')
+        .attr('id', function(d) {
+          return d.pin + "_key";
+        });
+      key_items.append('div')
+        .attr('id', function(d) {
+          return 'key_square_' + d.pin;
+        })
+        .attr('class', function(d) {
+          return 'key_square ' + d.pin;
+        });
+      key_items.append('div')
+        .attr('class', 'key_label')
+        .text(function(d) {
+          return d.line_name;
+        });
+      d3.selectAll('.key_line')
+        .on('click', get_timeseries_data);
+    }
+  </script>
+</head>
+
+<body>
+  <div class='container'>
+    Based on alldevices, using group to display the value in the correct location
+
+    <div id="timeseries"></div>
+    <div id="key"></div>
+
+
+
+
+    <!-- </div> -->
+    <script>
+      //d3.json('data/yun.json', draw);
+      d3.json('/get_pins', draw);
+    </script>
+</body>
+
+</html>

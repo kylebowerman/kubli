@@ -2,11 +2,11 @@
   font-family: arial;
   font-size:0.8em;
 }
-path {
+/*path {
   fill:none;
-  stroke:black;
+  stroke:red;
   stroke-width:2px;
-}
+}*/
 .tick {
   fill:none;
   stroke:black;

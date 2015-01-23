@@ -7,7 +7,7 @@
     stroke: black;
   }
   .timeseries path {
-    stroke-width: 3px;
+    stroke-width: 2px;
   }
   .timeseries circle {
     stroke: white;
@@ -16,8 +16,13 @@
     fill: white;
     stroke: none;
     font-size: 12px;
-    font-weight: bold;
+    color: brown;
+    background: red;
+
   }
+
+
+
   .line {
     float: left;
   }
@@ -50,30 +55,40 @@
 
   /* from train-colors */
 
-  .T0{
-    stroke:#2850AD;
-    fill:#2850AD;
-    background-color:#2850AD;
-  }
-  .T1 {
-    stroke:#FF6319;
-    fill:#FF6319;
-    background-color:#FF6319;
-  }
   .A0 {
-    stroke:#6CBE45;
-    fill:#6CBE45;
-    background-color:#6CBE45;
+    stroke: GoldenRod;
+    fill: GoldenRod;
+    background-color: GoldenRod;
   }
   .A1 {
-    stroke:#996633;
-    fill:#996633;
-    background-color:#996633;
+    stroke: steelblue;
+    fill: steelblue;
+    background-color: steelblue;
+  }
+  .T1 {
+    stroke: #5d3cc7;
+    fill: #5d3cc7;
+    background-color: #5d3cc7;
+  }
+  .T2 {
+    stroke: #720000;
+    fill: #720000;
+    background-color: #720000;
+  }
+
+   #mytooltip {
+    font-size: 24px;
+    font-style: italic;
+    background-color: yellow;
+    background: green;
+    border: 5px solid red;
   }
 
 
 </style>
 <script>
+
+/*jshint -W003, -W109, -W117, strict: false */
   var time_scale;
   var value_scale;
 
@@ -102,16 +117,17 @@
     }
   }
 
+  //label at the end
   function add_label(circle, d, i) {
     d3.select(circle)
       .transition()
       .attr('r', 9);
-    d3.select('#' + d.line_id).append('text')
-      .text(d.line_id)
+    d3.select('#' + d.pin).append('text')
+      .text(d.pin)
       .attr('text-anchor', 'middle')
       .style("dominant-baseline", "central")
-      .attr('x', time_scale(d.time))
-      .attr('y', value_scale(d.late_percent))
+      .attr('x', time_scale(d.epochtime))
+      .attr('y', value_scale(d.value))
       .attr('class', 'linelabel')
       .style('opacity', 0)
       .style('fill', 'white')
@@ -151,7 +167,7 @@
       .delay(function(d, i) {
         return i / data.length * enter_duration;
       })
-      .attr('r', 5)
+      .attr('r', 3)
       .each('end', function(d, i) {
         if (i === data.length - 1) {
           add_label(this, d);
@@ -164,21 +180,23 @@
       })
       .on('mouseout', function(d, i) {
         if (i !== data.length - 1) {
-          d3.select(this).transition().attr('r', 5);
+          d3.select(this).transition().attr('r', 3);
         }
       });
     g.selectAll('circle')
       .on('mouseover.tooltip', function(d) {
-        d3.select("text." + d.line_id).remove();
+        d3.select("text." + d.pin).remove();
         d3.select('#chart')
           .append('text')
-          .text(d.late_percent + "%")
-          .attr('x', time_scale(d.time) + 10)
-          .attr('y', value_scale(d.late_percent) - 10)
-          .attr('class', d.pin);
+          .text(Math.round(d.value))
+          .attr('x', time_scale(d.epochtime) + 10)
+          .attr('y', value_scale(d.value) - 10)
+          .attr('class', d.pin )
+          .attr('id','mytooltip');
+
       })
       .on('mouseout.tooltip', function(d) {
-        d3.select("text." + d.line_id)
+        d3.select("text." + d.pin)
           .transition()
           .duration(500)
           .style('opacity', 0)
