@@ -18,6 +18,9 @@ circle{
 circle.moisture{
   fill:steelblue;
 }
+circle.moistureWheat{
+  fill:royalBlue;
+}
 circle.light{
   fill:GoldenRod;
 }
@@ -67,4 +70,31 @@ path.T2{
 
 #timeseries{
   float:left;
+}
+
+.A2 {
+  stroke: blue;
+  fill: blue;
+  background-color: blue;
+}
+
+.A0 {
+  stroke: GoldenRod;
+  fill: GoldenRod;
+  background-color: GoldenRod;
+}
+.A1 {
+  stroke: steelblue;
+  fill: steelblue;
+  background-color: steelblue;
+}
+.T1 {
+  stroke: #5d3cc7;
+  fill: #5d3cc7;
+  background-color: #5d3cc7;
+}
+.T2 {
+  stroke: #720000;
+  fill: #720000;
+  background-color: #720000;
 }
