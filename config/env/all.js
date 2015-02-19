@@ -43,6 +43,5 @@ module.exports = {
   },
 
   // The session cookie name
-  sessionName: 'connect.sid',
-  googleTrackingId: 'UA-59886745-2'
+  sessionName: 'connect.sid'
 };
