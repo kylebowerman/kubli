@@ -1,9 +1,7 @@
 {
   "core": {
     "css": {
-      "bower_components/build/css/dist.min.css": [
-        "bower_components/bootstrap/dist/css/bootstrap.css"
-      ]
+      "bower_components/build/css/dist.min.css": []
     },
     "js": {
       "bower_components/build/js/dist.min.js": [
