@@ -8,6 +8,13 @@ module.exports = {
    * See http://mongodb.github.io/node-mongodb-native/driver-articles/mongoclient.html#mongoclient-connect-options
    * and http://mongoosejs.com/docs/connections.html for more information
    */
+   debug: true,
+ //  aggregate: 'whatever that is not false, because boolean false value turns aggregation off', //false
+   aggregate: false,
+   mongoose: {
+     debug: true
+   },
+
   dbOptions: {
     /*
     server: {
