@@ -14,6 +14,7 @@ Schema = mongoose.Schema;
 var McudbSchema = new Schema({
 
   name:       { type: String, trim: true },
+  make:       { type: String, trim: true },
   url:        { type: String, trim: true },
   processor:  { type: String, trim: true },
   V_opp_in:   { type: String, trim: true },
@@ -23,14 +24,14 @@ var McudbSchema = new Schema({
   SRAM:       { type: Number},
   Flash:      { type: Number},
   time:       { type: Date},
-  USB:        { type: Number},
-  UART:       { type: Number},
+  USB:        { type: String, trim: true},
+  UART:       { type: String, trim: true},
   user:       { type: Schema.ObjectId, ref: 'User' }
 
 
 
 }, {
-  collection: 'mcudb'
+  collection: 'flok'
 });
 
 /**

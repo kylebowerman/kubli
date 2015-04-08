@@ -20,7 +20,15 @@ Sensor.register(function(app, auth, database) {
   Sensor.menus.add({
     title: 'sensor index page',
     link: 'sensor index page',
-  //  roles: ['authenticated'],
+//    roles: ['authenticated'],
+    menu: 'main'
+  });
+
+  //cant figure out how to display both unatthenticated and
+  Sensor.menus.add({
+    title: 'sensor index page',
+    link: 'sensor index page',
+    roles: ['authenticated', 'anonymous'],
     menu: 'main'
   });
 

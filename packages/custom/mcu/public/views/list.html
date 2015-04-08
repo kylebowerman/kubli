@@ -1,0 +1,24 @@
+<style>
+  .myGrid {
+    width: 100%;
+    height: 700px;
+  }
+</style>
+
+
+<div class="" data-ng-controller="McuController" data-ng-init="loadlist()">
+
+  Single selection grid without rowHeader, and allowing rowSelection to be toggled on and off dynamically:
+  <br/>
+  <button type="button" class="btn btn-success" ng-click="toggleRowSelection()">Toggle rowSelection</button>
+  <strong>rowSelection:</strong>
+  <span ng-bind="gridApi.grid.options.enableRowSelection"></span>
+
+
+  <div ui-grid="gridOptions" class="myGrid" ui-grid-pinning ui-grid-selection ></div>
+
+
+<well>{{gridApi.selection}}</well>
+
+
+</div>

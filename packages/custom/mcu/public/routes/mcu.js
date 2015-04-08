@@ -2,9 +2,9 @@
 
 angular.module('mean.mcu').config(['$stateProvider',
   function($stateProvider) {
-    $stateProvider.state('mcu example page', {
-      url: '/mcu/example',
-      templateUrl: 'mcu/views/index.html'
+    $stateProvider.state('mcu list all', {
+      url: '/mcu/all',
+      templateUrl: 'mcu/views/list.html'
     });
   }
 ]);

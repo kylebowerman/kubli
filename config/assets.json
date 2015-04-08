@@ -1,7 +1,9 @@
 {
   "core": {
     "css": {
-      "bower_components/build/css/dist.min.css": []
+      "bower_components/build/css/dist.min.css": [
+        " bower_components/angular-ui-grid/ui-grid.css"
+      ]
     },
     "js": {
       "bower_components/build/js/dist.min.js": [
@@ -11,7 +13,9 @@
         "bower_components/angular-cookies/angular-cookies.min.js",
         "bower_components/angular-resource/angular-resource.min.js",
         "bower_components/angular-ui-router/release/angular-ui-router.min.js",
-        "bower_components/angular-bootstrap/ui-bootstrap-tpls.js"
+        "bower_components/angular-bootstrap/ui-bootstrap-tpls.js",
+        "bower_components/angular-ui-grid/ui-grid.js",
+        "bower_components/angular-touch/angular-touch.js"
       ]
     }
   }

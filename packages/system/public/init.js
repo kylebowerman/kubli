@@ -17,7 +17,7 @@ for (var index in window.modules) {
 }
 
 // Default modules
-var modules = ['ngCookies', 'ngResource', 'ui.bootstrap', 'ui.router'];
+var modules = ['ngCookies', 'ngResource', 'ui.bootstrap', 'ui.router', 'ui.grid', 'ui.grid.selection', 'ui.grid.pinning', 'ngTouch'];
 modules = modules.concat(packageModules);
 
 // Combined modules

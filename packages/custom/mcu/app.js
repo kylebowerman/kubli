@@ -18,12 +18,15 @@ Mcu.register(function(app, auth, database) {
 
   //We are adding a link to the main menu for all authenticated users
   Mcu.menus.add({
-    title: 'mcu example page',
-    link: 'mcu example page',
-    roles: ['authenticated'],
+    title: 'Microcontrollers',
+    link: 'mcu list all',
+    roles: ['authenticated','anonymous'],
     menu: 'main'
   });
-  
+
+
+
+
   Mcu.aggregateAsset('css', 'mcu.css');
 
   /**
